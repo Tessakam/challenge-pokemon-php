@@ -5,13 +5,16 @@ declare(strict_types=1);
 ini_set('display_errors', "on");
 ini_set('display_startup_errors', "on");
 error_reporting(E_ALL);
-var_dump($_GET);
 
-$url = 'https://pokeapi.co/api/v2/pokemon/';
+/*use var_dump to check specific error
+var_dump($_GET); */
+
+$url = 'https://pokeapi.co/api/v2/pokemon/'; // niet vergeten om te eindigen met "/" als er nadien input volgt
 $searchPokemon = '';
 $result = '';
 $id = '';
 $name = '';
+$image = '';
 $moves = '';
 
 //tutorial https://tutorialsclass.com/php-rest-api-file_get_contents/
@@ -23,15 +26,16 @@ return $fetch;
 }
 
 // GET is used to request data from a specified resource.
-if (!empty($_GET['input'])) { //search when field is NOT empty
+if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bulbasaur
 $searchPokemon = $_GET['input'];
 $result = fetchPokemon($url. $searchPokemon);
 $id = $result['id'];
 $name = $result['name'];
+$image = $result['sprites']['front_default'];
+
 }
 
 ?>
-
 <!-- No need to create a separate index.html file -->
 <!doctype html>
 <html lang="en">
@@ -42,33 +46,33 @@ $name = $result['name'];
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!--<link rel="stylesheet" type="text/css" href="style.css"> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Pokédex</title>
 </head>
 <body>
-<p>
 <h1>Hello Pokédex!</h1>
 <br>
+<!-- Always put the echo separate - NOT inside your form!! -->
+<!-- to check: adding empty = clear the input field? -->
+<div class="id" align="center">
+    <?php echo($id) ?> </div>
+
+<div class="name" align="center">
+    <?php echo($name) ?> </div>
+
+<img src="<?php echo $image ?>" alt="image pokemon" class="center">
+
+<div class="moves" align="center">
+    <?php echo $moves ?>
+</div>
 
 <!-- HTML use method Get and link with name - NOT with id!! -->
 <form action="index.php" method="get">
     <br>
     <p>Search your Pokémon with the <strong> name or ID-number</strong></p>
-    <input type="text" name="input" id="search" placeholder="Name / ID-number" >
+    <input type="text" name="input" id="search" placeholder="Name / ID-number">
     <input type="submit">
 </form>
-
-<?php echo($id) ?>
-<?php echo($name) ?>
-
-<div class="actions">
-    <br>
-    <button type="button" class="game" id="search">Search!</button>
-</div>
-
-<div>
-    <img src="" id="img" style width="200px" class="center">
-</div>
 
 </body>
 </html>
