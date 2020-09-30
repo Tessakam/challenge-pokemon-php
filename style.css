@@ -1,0 +1,38 @@
+html {
+    background-image:url("https://images8.alphacoders.com/662/thumb-1920-662118.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    font-family: Impact, Charcoal, sans-serif;
+    color: black;
+    box-sizing: border-box;
+}
+
+body {
+    width: 500px;
+    margin: 0 auto;
+    background-color: #F9E620;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding: 20px 20px 20px 20px;
+    border: 1px dashed grey;
+    font-family: Impact, Charcoal, sans-serif;
+    position: sticky;
+
+}
+
+h1 {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+p {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
