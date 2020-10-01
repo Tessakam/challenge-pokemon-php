@@ -16,7 +16,7 @@ $result = '';
 $id = '';
 $name = '';
 $image = '';
-$oneMove = [];
+$oneMove = '';
 $fourMoves = ''; // change array to '' to solve error: Array to string conversion
 $prevEvo = '';
 $prevEvoName = '';
@@ -33,7 +33,7 @@ function fetchPokemon(string $url): array
 }
 
 // GET is used to request data from a specified resource.
-if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bulbasaur
+if (!empty($_GET['input'])) {
     $searchPokemon = $_GET['input'];
     $result = fetchPokemon($url . $searchPokemon);
     $resultRevolution = fetchPokemon($url_species . $searchPokemon);
@@ -62,16 +62,16 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
     // if there is a previous evolution, fetch data from "evolves_from_species" and show the image
     if ($prevEvo) {
         $prevEvoName = $prevEvo['name'];
-        $prevEvoFetch = file_get_contents($url .$prevEvoName);
+        $prevEvoFetch = fetchPokemon($url.$prevEvoName);
         $prevEvoImage = $prevEvoFetch['sprites']['front_default'];
         return ($prevEvoImage);
 
     } else {
-    //nothing to show
+        //nothing to show
     }
-
-    if (empty($_GET['input'])) {
-        echo "Don't forget to complete the field with ID or number.";}
+}
+if (empty($_GET['input'])) { //field empty: show bulbasaur // NOT WORKING FOR SOME REASON!
+    $searchPokemon = 1;
 }
 
 ?>
@@ -117,15 +117,18 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
 <div class="moves" align="center">
     <p><strong>4 random moves:</strong></p>
     <?php foreach ($moves as $fourMoves) { //otherwise you only have 1 move s result!
-        echo "$fourMoves ";
+        echo "$fourMoves";
     } ?>
 </div>
 
+<div class="moves" align="center">
+    <p><strong>previous evolution:</strong></p>
+    <?php echo $prevEvoImage ?>
+</div>
 
 <img src="<?php echo $image ?>" alt="image pokemon" class="center">
 <!-- Extra: combine image default front/back into 1
 https://stackoverflow.com/questions/25636066/php-gd-library-turn-2-images-into-1-side-by-side -->
-
 
 </body>
 </html>
