@@ -10,14 +10,14 @@ error_reporting(E_ALL);
 var_dump($_GET); */
 
 $url = 'https://pokeapi.co/api/v2/pokemon/'; // niet vergeten om te eindigen met "/" als er nadien input volgt
-$url_species= 'https://pokeapi.co/api/v2/pokemon-species/'; // evolutions
+$url_species = 'https://pokeapi.co/api/v2/pokemon-species/'; // evolutions
 $searchPokemon = '';
 $result = '';
 $id = '';
 $name = '';
 $image = '';
 $oneMove = [];
-$fourMoves_push = ''; // change array to '' to solve error: Array to string conversion
+$fourMoves = ''; // change array to '' to solve error: Array to string conversion
 
 //tutorial https://tutorialsclass.com/php-rest-api-file_get_contents/
 // Pass API URL in file_get_contents() to fetch data
@@ -39,11 +39,16 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
 
     //Example: https://www.php.net/manual/en/function.rand.php
     //4 moves to display
+    $moves = array();
     $maxMoves = 4;
     $allMoves = count($result['moves']);
     for ($i = 0; $i < $maxMoves; $i++) {
-        $random = (rand(0, $allMoves));
-        $fourMoves_push = $result['moves'][$random]['move']['name']. ", "; //same as JS
+        if ($allMoves > 4) {
+            $random = (rand(0, $allMoves));
+            array_push($moves, $result['moves'][$random]['move']['name'] . ", "); //same as JS
+        } elseif ($allMoves < 4) {
+            array_push($moves, $result['moves'][$i]['move']['name'] . ", ");
+        }
     }
 
     // show previous evolutions
@@ -77,7 +82,7 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
 <!-- to check: adding empty = clear the input field? -->
 <div class="id" align="center">
     <p><strong>ID-number:</strong></p>
-    <?php  echo $id ?> </div>
+    <?php echo $id ?> </div>
 
 <div class="name" align="center">
     <p><strong>Name:</strong></p>
@@ -90,14 +95,15 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
 
 <div class="moves" align="center">
     <p><strong>4 random moves:</strong></p>
-    <?php echo $fourMoves_push ?>
+    <?php foreach ($moves as $fourMoves) { //otherwise you only have 1 move s result!
+        echo "$fourMoves ";
+    } ?>
 
 </div>
 
 <img src="<?php echo $image ?>" alt="image pokemon" class="center">
 <!-- Extra: combine image default front/back into 1
 https://stackoverflow.com/questions/25636066/php-gd-library-turn-2-images-into-1-side-by-side -->
-
 
 
 </body>
