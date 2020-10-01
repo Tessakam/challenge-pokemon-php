@@ -15,25 +15,39 @@ $result = '';
 $id = '';
 $name = '';
 $image = '';
-$moves = '';
+$moves = [];
 
 //tutorial https://tutorialsclass.com/php-rest-api-file_get_contents/
 // Pass API URL in file_get_contents() to fetch data
-function fetchPokemon (string $url) : array { // put data into PHP array
-$fetch = file_get_contents($url);
-$fetch = json_decode($fetch, true);
-return $fetch;
+function fetchPokemon(string $url): array
+{ // put data into PHP array
+    $fetch = file_get_contents($url);
+    $fetch = json_decode($fetch, true);
+    return $fetch;
 }
 
 // GET is used to request data from a specified resource.
 if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bulbasaur
-$searchPokemon = $_GET['input'];
-$result = fetchPokemon($url. $searchPokemon);
-$id = $result['id'];
-$name = $result['name'];
-$image = $result['sprites']['front_default'];
-
+    $searchPokemon = $_GET['input'];
+    $result = fetchPokemon($url . $searchPokemon);
+    $id = $result['id'];
+    $name = $result['name'];
+    $imageFront = $result['sprites']['front_default'];
+    $maxmoves = 4;
+    $moves = $result['moves'][0]['move']['name'];
 }
+
+/*
+function randomMoves($allMoves){
+    $amountToDisplay = min(4, sizeof($allMoves));
+    $moveNames = "";
+    for ($i=0; $i<$amountToDisplay; $i++){
+        $randomNumber = rand(0,sizeof($allMoves));
+        $moveNames .= $allMoves[$randomNumber]['move']['name']. ", ";
+    }
+        return $moveNames;
+ */
+
 
 ?>
 <!-- No need to create a separate index.html file -->
@@ -55,12 +69,12 @@ $image = $result['sprites']['front_default'];
 <!-- Always put the echo separate - NOT inside your form!! -->
 <!-- to check: adding empty = clear the input field? -->
 <div class="id" align="center">
-    <?php echo($id) ?> </div>
+    <?php echo $id ?> </div>
 
 <div class="name" align="center">
-    <?php echo($name) ?> </div>
+    <?php echo $name ?> </div>
 
-<img src="<?php echo $image ?>" alt="image pokemon" class="center">
+<img src="<?php echo $imageFront ?>" alt="image pokemon" class="center">
 
 <div class="moves" align="center">
     <?php echo $moves ?>
@@ -71,9 +85,8 @@ $image = $result['sprites']['front_default'];
     <br>
     <p>Search your Pokémon with the <strong> name or ID-number</strong></p>
     <input type="text" name="input" id="search" placeholder="Name / ID-number">
-    <input type="submit">
+    <input type="submit" value="Search!">
 </form>
 
 </body>
 </html>
-
