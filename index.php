@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 var_dump($_GET); */
 
 $url = 'https://pokeapi.co/api/v2/pokemon/'; // niet vergeten om te eindigen met "/" als er nadien input volgt
-$url_species = 'https://pokeapi.co/api/v2/pokemon-species/'; // evolutions
+$url_species = 'https://pokeapi.co/api/v2/pokemon-species/'; // prev evolutions
 $searchPokemon = '';
 $result = '';
 $id = '';
@@ -18,6 +18,10 @@ $name = '';
 $image = '';
 $oneMove = [];
 $fourMoves = ''; // change array to '' to solve error: Array to string conversion
+$prevEvo = '';
+$prevEvoName = '';
+$prevEvoFetch = '';
+$prevEvoImage = '';
 
 //tutorial https://tutorialsclass.com/php-rest-api-file_get_contents/
 // Pass API URL in file_get_contents() to fetch data
@@ -32,6 +36,7 @@ function fetchPokemon(string $url): array
 if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bulbasaur
     $searchPokemon = $_GET['input'];
     $result = fetchPokemon($url . $searchPokemon);
+    $resultRevolution = fetchPokemon($url_species . $searchPokemon);
     $id = $result['id'];
     $name = $result['name'];
     $image = $result['sprites']['front_default'];
@@ -45,14 +50,30 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
     for ($i = 0; $i < $maxMoves; $i++) {
         if ($allMoves > 4) {
             $random = (rand(0, $allMoves));
-            array_push($moves, $result['moves'][$random]['move']['name'] . ", "); //same as JS
-        } elseif ($allMoves < 4) {
-            array_push($moves, $result['moves'][$i]['move']['name'] . ", ");
+            array_push($moves, $result['moves'][$random]['move']['name']); //same as JS
+        } elseif ($allMoves < 4) { // less than 4, show only what's available
+            array_push($moves, $result['moves'][$i]['move']['name']);
         }
     }
 
-    // show previous evolutions
+    // show previous evolutions ...
+    $prevEvo = $resultRevolution['evolves_from_species'];
+
+    // if there is a previous evolution, fetch data from "evolves_from_species" and show the image
+    if ($prevEvo) {
+        $prevEvoName = $prevEvo['name'];
+        $prevEvoFetch = file_get_contents($url .$prevEvoName);
+        $prevEvoImage = $prevEvoFetch['sprites']['front_default'];
+        return ($prevEvoImage);
+
+    } else {
+    //nothing to show
+    }
+
+    if (empty($_GET['input'])) {
+        echo "Don't forget to complete the field with ID or number.";}
 }
+
 ?>
 
 <!-- No need to create a separate index.html file -->
@@ -98,8 +119,8 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
     <?php foreach ($moves as $fourMoves) { //otherwise you only have 1 move s result!
         echo "$fourMoves ";
     } ?>
-
 </div>
+
 
 <img src="<?php echo $image ?>" alt="image pokemon" class="center">
 <!-- Extra: combine image default front/back into 1
