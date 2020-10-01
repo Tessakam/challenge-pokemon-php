@@ -16,7 +16,7 @@ $id = '';
 $name = '';
 $image = '';
 $oneMove = [];
-$fourMoves = [];
+$fourMoves_push = ''; // change array to '' to solve error: Array to string conversion
 
 //tutorial https://tutorialsclass.com/php-rest-api-file_get_contents/
 // Pass API URL in file_get_contents() to fetch data
@@ -34,16 +34,16 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
     $id = $result['id'];
     $name = $result['name'];
     $image = $result['sprites']['front_default'];
-    //1 move
     $oneMove = $result['moves'][0]['move']['name'];
 
     //Example: https://www.php.net/manual/en/function.rand.php
     //4 moves to display
 
-    $maxMoves = 4; // this is your min() of rand
-        for ($i = 0; $i < $maxMoves; $i++) {
-        $random = rand($maxMoves,count($result['moves']));
-        $fourMoves = [$random]['move']['name'];
+    $maxMoves = 4;
+    $allMoves = count($result['moves']);
+    for ($i = 0; $i < $maxMoves; $i++) {
+        $random = (rand(0, $allMoves));
+        $fourMoves_push = $result['moves'][$random]['move']['name']; //same as JS
     }
 }
 
@@ -75,10 +75,10 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
 
 <div class="moves" align="center">
     <?php echo $oneMove ?>
-    <?php echo $fourMoves ?>
+    <?php echo $fourMoves_push ?>
 </div>
 
-<img src="<?php echo $image?>" alt="image pokemon" class="center">
+<img src="<?php echo $image ?>" alt="image pokemon" class="center">
 <!-- Extra: combine image default front/back into 1
 https://stackoverflow.com/questions/25636066/php-gd-library-turn-2-images-into-1-side-by-side -->
 
