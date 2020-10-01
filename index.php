@@ -10,6 +10,7 @@ error_reporting(E_ALL);
 var_dump($_GET); */
 
 $url = 'https://pokeapi.co/api/v2/pokemon/'; // niet vergeten om te eindigen met "/" als er nadien input volgt
+$url_species= 'https://pokeapi.co/api/v2/pokemon-species/'; // evolutions
 $searchPokemon = '';
 $result = '';
 $id = '';
@@ -38,15 +39,15 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
 
     //Example: https://www.php.net/manual/en/function.rand.php
     //4 moves to display
-
     $maxMoves = 4;
     $allMoves = count($result['moves']);
     for ($i = 0; $i < $maxMoves; $i++) {
         $random = (rand(0, $allMoves));
-        $fourMoves_push = $result['moves'][$random]['move']['name']; //same as JS
+        $fourMoves_push = $result['moves'][$random]['move']['name']. ", "; //same as JS
     }
-}
 
+    // show previous evolutions
+}
 ?>
 
 <!-- No need to create a separate index.html file -->
@@ -64,18 +65,33 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
 </head>
 <body>
 <h1>Hello Pokédex!</h1>
-<br>
+
+<!-- HTML use method Get and link with name - NOT with id!! -->
+<form action="index.php" method="get">
+    <p>Search your Pokémon with the <strong> name or ID-number</strong></p>
+    <input type="text" name="input" id="search" placeholder="Name / ID-number">
+    <input type="submit" name="submit" value="Search!" align="center">
+</form>
+
 <!-- Always put the echo separate - NOT inside your form!! -->
 <!-- to check: adding empty = clear the input field? -->
 <div class="id" align="center">
-    <?php echo $id ?> </div>
+    <p><strong>ID-number:</strong></p>
+    <?php  echo $id ?> </div>
 
 <div class="name" align="center">
+    <p><strong>Name:</strong></p>
     <?php echo $name ?> </div>
 
 <div class="moves" align="center">
+    <p><strong>1 move:</strong></p>
     <?php echo $oneMove ?>
+</div>
+
+<div class="moves" align="center">
+    <p><strong>4 random moves:</strong></p>
     <?php echo $fourMoves_push ?>
+
 </div>
 
 <img src="<?php echo $image ?>" alt="image pokemon" class="center">
@@ -83,13 +99,6 @@ if (!empty($_GET['input'])) { //search when field is NOT empty, otherwise 1 = bu
 https://stackoverflow.com/questions/25636066/php-gd-library-turn-2-images-into-1-side-by-side -->
 
 
-<!-- HTML use method Get and link with name - NOT with id!! -->
-<form action="index.php" method="get">
-    <br>
-    <p>Search your Pokémon with the <strong> name or ID-number</strong></p>
-    <input type="text" name="input" id="search" placeholder="Name / ID-number">
-    <input type="submit" value="Search!">
-</form>
 
 </body>
 </html>
